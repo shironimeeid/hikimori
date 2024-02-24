@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader and Monokai Clock</title>
+    <link rel="icon" href="https://telegra.ph/file/35d8e558aea1973cfbb18.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dark-mode {
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        .light-mode {
+            background-color: #ffffff;
+            color: #343a40;
+        }
+
+        body.monokai-theme {
+            background-color: #272822; /* Background Monokai */
+            color: #F8F8F2; /* Default text color Monokai */
+            font-family: 'Fira Code', monospace; /* Font similar to VS Code */
+        }
+        #clockDisplay {
+            margin-top: 20px; /* Added margin-top to separate from the downloader UI */
+            padding: 20px;
+            border: 2px solid #F92672; /* Pink for box border, resembling caret in Monokai */
+            color: inherit; /* Text follows body color */
+            font-size: 16px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="container mt-5">
+        <h1>YouTube Downloader</h1>
+        <input type="text" id="url" class="form-control mt-3" placeholder="Enter YouTube URL">
+        <select class="form-select mt-3" id="format">
+            <option value="mp3">MP3</option>
+            <option value="mp4">MP4</option>
+        </select>
+        <button class="btn btn-primary mt-3" id="downloadBtn">Download</button>
+        <div class="form-check form-switch mt-3">
+            <input class="form-check-input" type="checkbox" id="modeToggle">
+            <label class="form-check-label" for="modeToggle">Dark Mode</label>
+        </div>
+    </div>
+    <pre id="clockDisplay" class="container monokai-theme"></pre> <!-- Monokai Clock Display -->
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const url = document.getElementById('url').value;
+            const format = document.getElementById('format').value;
+            window.location.href = `http://localhost:3001/download?URL=${encodeURIComponent(url)}&format=${format}`;
+        });
+
+        // Dark mode / Light mode toggle
+        const modeToggle = document.getElementById("modeToggle");
+        modeToggle.addEventListener("change", function() {
+            if (modeToggle.checked) {
+                document.body.classList.remove("light-mode");
+                document.body.classList.add("dark-mode");
+            } else {
+                document.body.classList.remove("dark-mode");
+                document.body.classList.add("light-mode");
+            }
+        });
+
+        function updateClock() {
+            const now = new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"});
+            const nowDate = new Date(now);
+            const clock = {
+                am_pm: nowDate.getHours() >= 12 ? "PM" : "AM",
+                hour: nowDate.getHours() > 12 ? nowDate.getHours() - 12 : nowDate.getHours(),
+                minute: nowDate.getMinutes(),
+                second: nowDate.getSeconds(),
+                day: nowDate.toLocaleString('id-ID', { weekday: 'long', timeZone: "Asia/Jakarta" }),
+                date: nowDate.getDate(),
+                month: nowDate.toLocaleString('id-ID', { month: 'long', timeZone: "Asia/Jakarta" }),
+                year: nowDate.getFullYear(),
+            };
+
+            // Simplified clock display for this combined version
+            const formattedClock = `
+    <span style="color: #F92672;">function</span> <span style="color: #A6E22E;">updateClock</span> = () { 
+    <span style="color: #F92672;">const</span> <span style="color: #A6E22E;">clock</span> = { 
+    <span style="color: #AE81FF;">am_pm</span>: "<span style="color: #A6E22E;">${clock.am_pm}</span>", 
+    <span style="color: #AE81FF;">hour</span>: <span style="color: #FF7F00;">${clock.hour}</span>, 
+    <span style="color: #AE81FF;">minute</span>: <span style="color: #FF7F00;">${clock.minute}</span>, 
+    <span style="color: #AE81FF;">second</span>: <span style="color: #FF7F00;">${clock.second}</span>, 
+    <span style="color: #AE81FF;">day</span>: "<span style="color: #A6E22E;">${clock.day}</span>", 
+    <span style="color: #AE81FF;">date</span>: <span style="color: #FF7F00;">${clock.date}</span>, 
+    <span style="color: #AE81FF;">month</span>: "<span style="color: #A6E22E;">${clock.month}</span>", 
+    <span style="color: #AE81FF;">year</span>: <span style="color: #FF7F00;">${clock.year}</span>, 
+}
+   })
+   <span style="color: #F92672;">const</span> <span style="color: #A6E22E;">serverInternal</span> = (true) {`;
+
+    document.getElementById("clockDisplay").innerHTML = formattedClock;
+}
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
